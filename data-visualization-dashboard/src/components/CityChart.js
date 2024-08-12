@@ -1,30 +1,20 @@
-// src/components/LineChart.js
+// src/components/CityChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Line } from "react-chartjs-2";
+import { Scatter } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  LineElement,
   PointElement,
-  Title,
   Tooltip,
   Legend,
 } from "chart.js";
 
 // Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
-const LineChart = () => {
+const CityChart = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,38 +22,38 @@ const LineChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/linechart"); // Adjust URL if needed
+        const response = await axios.get("http://localhost:5000/api/city"); // Adjust URL if needed
         const responseData = response.data;
 
         if (Array.isArray(responseData)) {
-          const labels = responseData.map((item) => item.year);
-          const intensity = responseData.map((item) => item.intensity);
-          const likelihood = responseData.map((item) => item.likelihood);
-          const relevance = responseData.map((item) => item.relevance);
+          const labels = responseData.map((item) => item.city);
+          const intensity = responseData.map((item) => ({
+            x: item.intensity,
+            y: item.likelihood,
+          }));
+          const likelihood = responseData.map((item) => ({
+            x: item.intensity,
+            y: item.likelihood,
+          }));
+          const relevance = responseData.map((item) => ({
+            x: item.intensity,
+            y: item.relevance,
+          }));
 
           setData({
             labels,
             datasets: [
               {
-                label: "Intensity",
+                label: "Intensity vs Likelihood",
                 data: intensity,
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
                 borderColor: "rgba(255, 99, 132, 1)",
-                backgroundColor: "rgba(255, 99, 132, 0.2)",
-                fill: true,
               },
               {
-                label: "Likelihood",
-                data: likelihood,
-                borderColor: "rgba(54, 162, 235, 1)",
-                backgroundColor: "rgba(54, 162, 235, 0.2)",
-                fill: true,
-              },
-              {
-                label: "Relevance",
+                label: "Intensity vs Relevance",
                 data: relevance,
-                borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                fill: true,
+                backgroundColor: "rgba(54, 162, 235, 0.5)",
+                borderColor: "rgba(54, 162, 235, 1)",
               },
             ],
           });
@@ -92,7 +82,7 @@ const LineChart = () => {
           label: (context) => {
             const label = context.dataset.label || "";
             const value = context.raw;
-            return `${label}: ${value}`;
+            return `${label}: (${value.x}, ${value.y})`;
           },
         },
       },
@@ -101,13 +91,13 @@ const LineChart = () => {
       x: {
         title: {
           display: true,
-          text: "Year",
+          text: "Intensity",
         },
       },
       y: {
         title: {
           display: true,
-          text: "Value",
+          text: "Likelihood / Relevance",
         },
       },
     },
@@ -118,9 +108,9 @@ const LineChart = () => {
 
   return (
     <div>
-      <Line data={data} options={chartOptions} />
+      <Scatter data={data} options={chartOptions} />
     </div>
   );
 };
 
-export default LineChart;
+export default CityChart;

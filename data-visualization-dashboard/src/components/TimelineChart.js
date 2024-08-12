@@ -1,4 +1,4 @@
-// src/components/LineChart.js
+// src/components/TimelineChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
@@ -24,7 +24,7 @@ ChartJS.register(
   Legend
 );
 
-const LineChart = () => {
+const TimelineChart = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,37 +32,31 @@ const LineChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/linechart"); // Adjust URL if needed
+        const response = await axios.get("http://localhost:5000/api/timeline"); // Adjust URL if needed
         const responseData = response.data;
 
         if (Array.isArray(responseData)) {
           const labels = responseData.map((item) => item.year);
-          const intensity = responseData.map((item) => item.intensity);
-          const likelihood = responseData.map((item) => item.likelihood);
-          const relevance = responseData.map((item) => item.relevance);
+          const count = responseData.map((item) => item.count);
+          const totalIntensity = responseData.map(
+            (item) => item.totalIntensity
+          );
 
           setData({
             labels,
             datasets: [
               {
-                label: "Intensity",
-                data: intensity,
-                borderColor: "rgba(255, 99, 132, 1)",
-                backgroundColor: "rgba(255, 99, 132, 0.2)",
+                label: "Count",
+                data: count,
+                borderColor: "rgba(255, 159, 64, 1)",
+                backgroundColor: "rgba(255, 159, 64, 0.2)",
                 fill: true,
               },
               {
-                label: "Likelihood",
-                data: likelihood,
-                borderColor: "rgba(54, 162, 235, 1)",
-                backgroundColor: "rgba(54, 162, 235, 0.2)",
-                fill: true,
-              },
-              {
-                label: "Relevance",
-                data: relevance,
-                borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                label: "Total Intensity",
+                data: totalIntensity,
+                borderColor: "rgba(153, 102, 255, 1)",
+                backgroundColor: "rgba(153, 102, 255, 0.2)",
                 fill: true,
               },
             ],
@@ -123,4 +117,4 @@ const LineChart = () => {
   );
 };
 
-export default LineChart;
+export default TimelineChart;

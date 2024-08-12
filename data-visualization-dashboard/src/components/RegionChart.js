@@ -1,13 +1,12 @@
-// src/components/LineChart.js
+// src/components/RegionChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  LineElement,
-  PointElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -17,14 +16,13 @@ import {
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  LineElement,
-  PointElement,
+  BarElement,
   Title,
   Tooltip,
   Legend
 );
 
-const LineChart = () => {
+const RegionChart = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,11 +30,13 @@ const LineChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/linechart"); // Adjust URL if needed
+        const response = await axios.get("http://localhost:5000/api/region"); // Adjust URL if needed
         const responseData = response.data;
 
         if (Array.isArray(responseData)) {
-          const labels = responseData.map((item) => item.year);
+          const labels = responseData.map(
+            (item) => `${item.region} (${item.year})`
+          );
           const intensity = responseData.map((item) => item.intensity);
           const likelihood = responseData.map((item) => item.likelihood);
           const relevance = responseData.map((item) => item.relevance);
@@ -47,23 +47,17 @@ const LineChart = () => {
               {
                 label: "Intensity",
                 data: intensity,
-                borderColor: "rgba(255, 99, 132, 1)",
-                backgroundColor: "rgba(255, 99, 132, 0.2)",
-                fill: true,
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
               },
               {
                 label: "Likelihood",
                 data: likelihood,
-                borderColor: "rgba(54, 162, 235, 1)",
-                backgroundColor: "rgba(54, 162, 235, 0.2)",
-                fill: true,
+                backgroundColor: "rgba(54, 162, 235, 0.5)",
               },
               {
                 label: "Relevance",
                 data: relevance,
-                borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                fill: true,
+                backgroundColor: "rgba(75, 192, 192, 0.5)",
               },
             ],
           });
@@ -101,7 +95,7 @@ const LineChart = () => {
       x: {
         title: {
           display: true,
-          text: "Year",
+          text: "Region and Year",
         },
       },
       y: {
@@ -118,9 +112,9 @@ const LineChart = () => {
 
   return (
     <div>
-      <Line data={data} options={chartOptions} />
+      <Bar data={data} options={chartOptions} />
     </div>
   );
 };
 
-export default LineChart;
+export default RegionChart;
