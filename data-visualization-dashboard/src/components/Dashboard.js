@@ -3,7 +3,7 @@ import axios from "axios";
 import { Container, Grid, Paper } from "@mui/material";
 import LineChart from "./LineChart"; // Import the LineChart component
 import TimelineChart from "./TimelineChart"; // Import the TimelineChart component
-//import GeoMap from "./GeoMap"; // Import the GeoMap component
+
 import TopicsChart from "./TopicsChart"; // Import the TopicsChart component
 import RegionChart from "./RegionChart"; // Import the RegionChart component
 import CityChart from "./CityChart"; // Import the CityChart component
@@ -108,32 +108,6 @@ const Dashboard = () => {
         } else {
           setError("Geo map data is not in expected format.");
         }
-
-        // Fetch Topics Chart Data
-        // const topicsResponse = await axios.get(
-        //   "http://localhost:5000/api/topics"
-        // );
-        // const topicsData = topicsResponse.data;
-
-        // if (topicsData && Array.isArray(topicsData)) {
-        //   const labels = topicsData.map((item) => item.topic);
-        //   const values = topicsData.map((item) => item.value);
-
-        //   setTopicsData({
-        //     labels,
-        //     datasets: [
-        //       {
-        //         label: "Topics",
-        //         data: values,
-        //         borderColor: "rgba(255, 205, 86, 1)",
-        //         backgroundColor: "rgba(255, 205, 86, 0.2)",
-        //       },
-        //     ],
-        //   });
-        // } else {
-        //   setError("Topics chart data is not in expected format.");
-        // }
-
         // Fetch Region Chart Data
         const regionResponse = await axios.get(
           "http://localhost:5000/api/region"
@@ -240,11 +214,7 @@ const Dashboard = () => {
             <TimelineChart data={timelineChartData} options={chartOptions} />
           </Paper>
         </Grid>
-        {/* <Grid item xs={12}>
-          <Paper>
-            <GeoMap data={geoData} />
-          </Paper>
-        </Grid> */}
+
         <Grid item xs={12}>
           <Paper>
             <TopicsChart data={topicsData} options={chartOptions} />

@@ -1,6 +1,7 @@
 // src/components/TimelineChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../App.css";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -110,8 +111,13 @@ const TimelineChart = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  // Add a headline and import styles
   return (
-    <div>
+    <div className="chart-container">
+      <h2 className="chart-title">Timeline of Events by Year</h2>
+      <p className="chart-subtitle">
+        Tracking the number of events and total intensity over time
+      </p>
       <Line data={data} options={chartOptions} />
     </div>
   );

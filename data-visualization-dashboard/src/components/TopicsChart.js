@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import "../App.css";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -51,8 +52,13 @@ const TopicsChart = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  // Add a headline and import styles
   return (
-    <div>
+    <div className="chart-container">
+      <h2 className="chart-title">Topic Intensity Distribution</h2>
+      <p className="chart-subtitle">
+        Distribution of intensity across various topics
+      </p>
       <Pie data={data} />
     </div>
   );

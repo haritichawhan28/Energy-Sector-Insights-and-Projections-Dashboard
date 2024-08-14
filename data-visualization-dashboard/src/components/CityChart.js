@@ -1,6 +1,6 @@
-// src/components/CityChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../App.css";
 import { Scatter } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -11,7 +11,6 @@ import {
   Legend,
 } from "chart.js";
 
-// Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
 const CityChart = () => {
@@ -22,16 +21,12 @@ const CityChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/city"); // Adjust URL if needed
+        const response = await axios.get("http://localhost:5000/api/city");
         const responseData = response.data;
 
         if (Array.isArray(responseData)) {
           const labels = responseData.map((item) => item.city);
           const intensity = responseData.map((item) => ({
-            x: item.intensity,
-            y: item.likelihood,
-          }));
-          const likelihood = responseData.map((item) => ({
             x: item.intensity,
             y: item.likelihood,
           }));
@@ -107,7 +102,11 @@ const CityChart = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div>
+    <div className="chart-container">
+      <h2 className="chart-title">City Intensity vs Likelihood/Relevance</h2>
+      <p className="chart-subtitle">
+        A comparison of intensity with likelihood and relevance across cities
+      </p>
       <Scatter data={data} options={chartOptions} />
     </div>
   );

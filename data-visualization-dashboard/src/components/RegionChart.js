@@ -1,6 +1,7 @@
 // src/components/RegionChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../App.css";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -110,8 +111,13 @@ const RegionChart = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  // Add a headline and import styles
   return (
-    <div>
+    <div className="chart-container">
+      <h2 className="chart-title">Regional Metrics Overview</h2>
+      <p className="chart-subtitle">
+        Comparative analysis of intensity, likelihood, and relevance by region
+      </p>
       <Bar data={data} options={chartOptions} />
     </div>
   );

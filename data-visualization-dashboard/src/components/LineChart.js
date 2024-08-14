@@ -1,6 +1,7 @@
 // src/components/LineChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../App.css";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -116,8 +117,15 @@ const LineChart = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  // Add a headline and import styles in a similar manner
   return (
-    <div>
+    <div className="chart-container">
+      <h2 className="chart-title">
+        Yearly Trends of Intensity, Likelihood, and Relevance
+      </h2>
+      <p className="chart-subtitle">
+        Analyze the change in metrics over the years
+      </p>
       <Line data={data} options={chartOptions} />
     </div>
   );
