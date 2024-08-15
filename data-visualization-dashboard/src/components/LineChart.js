@@ -1,4 +1,3 @@
-// src/components/LineChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../App.css";
@@ -13,6 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import Filters from "./Filters"; // Import Filters component
 
 // Register Chart.js components
 ChartJS.register(
@@ -29,11 +29,25 @@ const LineChart = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({
+    endYear: "",
+    topics: "",
+    sector: "",
+    region: "",
+    pestle: "",
+    source: "",
+    swot: "",
+    country: "",
+    city: "",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/linechart"); // Adjust URL if needed
+        const queryParams = new URLSearchParams(filters).toString();
+        const response = await axios.get(
+          `http://localhost:5000/api/filterdata?${queryParams}`
+        );
         const responseData = response.data;
 
         if (Array.isArray(responseData)) {
@@ -80,7 +94,11 @@ const LineChart = () => {
     };
 
     fetchData();
-  }, []);
+  }, [filters]);
+
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
 
   const chartOptions = {
     responsive: true,
@@ -117,7 +135,6 @@ const LineChart = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-  // Add a headline and import styles in a similar manner
   return (
     <div className="chart-container">
       <h2 className="chart-title">
@@ -126,6 +143,7 @@ const LineChart = () => {
       <p className="chart-subtitle">
         Analyze the change in metrics over the years
       </p>
+      <Filters filters={filters} handleFilterChange={handleFilterChange} />
       <Line data={data} options={chartOptions} />
     </div>
   );

@@ -17,11 +17,32 @@ const CityChart = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({
+    endYear: "",
+    topics: "",
+    sector: "",
+    region: "",
+    pestle: "",
+    source: "",
+    swot: "",
+    country: "",
+    city: "",
+  });
+
+  const handleChange = (e) => {
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/city");
+        const queryParams = new URLSearchParams(filters).toString();
+        const response = await axios.get(
+          `http://localhost:5000/api/filterdata?${queryParams}`
+        );
         const responseData = response.data;
 
         if (Array.isArray(responseData)) {
@@ -64,7 +85,7 @@ const CityChart = () => {
     };
 
     fetchData();
-  }, []);
+  }, [filters]);
 
   const chartOptions = {
     responsive: true,
@@ -107,6 +128,30 @@ const CityChart = () => {
       <p className="chart-subtitle">
         A comparison of intensity with likelihood and relevance across cities
       </p>
+      <div className="filters">
+        <input
+          type="text"
+          name="city"
+          placeholder="City"
+          value={filters.city}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="region"
+          placeholder="Region"
+          value={filters.region}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="endYear"
+          placeholder="End Year"
+          value={filters.endYear}
+          onChange={handleChange}
+        />
+        {/* Add other filters as needed */}
+      </div>
       <Scatter data={data} options={chartOptions} />
     </div>
   );

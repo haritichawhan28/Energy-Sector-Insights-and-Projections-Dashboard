@@ -93,6 +93,41 @@ app.get("/api/linechart", async (req, res) => {
   }
 });
 
+app.get("/api/filterdata", async (req, res) => {
+  try {
+    const {
+      endYear,
+      topics,
+      sector,
+      region,
+      pestle,
+      source,
+      swot,
+      country,
+      city,
+    } = req.query;
+
+    // Build the query object
+    const query = {};
+    if (endYear) query.year = { $lte: parseInt(endYear) };
+    if (topics) query.topics = { $in: topics.split(",") };
+    if (sector) query.sector = sector;
+    if (region) query.region = region;
+    if (pestle) query.pestle = pestle;
+    if (source) query.source = source;
+    if (swot) query.swot = swot;
+    if (country) query.country = country;
+    if (city) query.city = city;
+
+    // Fetch data based on the query
+    const data = await DataModel.find(query);
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Route to get data for Timeline or Heatmap
 app.get("/api/timeline", async (req, res) => {
   try {

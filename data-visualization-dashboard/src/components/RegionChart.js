@@ -1,4 +1,3 @@
-// src/components/RegionChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../App.css";
@@ -27,11 +26,32 @@ const RegionChart = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({
+    endYear: "",
+    topics: "",
+    sector: "",
+    region: "",
+    pestle: "",
+    source: "",
+    swot: "",
+    country: "",
+    city: "",
+  });
+
+  const handleChange = (e) => {
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/region"); // Adjust URL if needed
+        const queryParams = new URLSearchParams(filters).toString();
+        const response = await axios.get(
+          `http://localhost:5000/api/filterdata?${queryParams}`
+        );
         const responseData = response.data;
 
         if (Array.isArray(responseData)) {
@@ -49,21 +69,24 @@ const RegionChart = () => {
                 label: "Intensity",
                 data: intensity,
                 backgroundColor: "rgba(255, 99, 132, 0.5)",
+                borderColor: "rgba(255, 99, 132, 1)",
               },
               {
                 label: "Likelihood",
                 data: likelihood,
                 backgroundColor: "rgba(54, 162, 235, 0.5)",
+                borderColor: "rgba(54, 162, 235, 1)",
               },
               {
                 label: "Relevance",
                 data: relevance,
                 backgroundColor: "rgba(75, 192, 192, 0.5)",
+                borderColor: "rgba(75, 192, 192, 1)",
               },
             ],
           });
         } else {
-          setError("Data is not in expected format.");
+          setError("Data is not in the expected format.");
         }
       } catch (error) {
         setError("Error fetching data.");
@@ -74,7 +97,7 @@ const RegionChart = () => {
     };
 
     fetchData();
-  }, []);
+  }, [filters]);
 
   const chartOptions = {
     responsive: true,
@@ -96,7 +119,7 @@ const RegionChart = () => {
       x: {
         title: {
           display: true,
-          text: "Region and Year",
+          text: "Region (Year)",
         },
       },
       y: {
@@ -108,16 +131,37 @@ const RegionChart = () => {
     },
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  // Add a headline and import styles
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <div className="chart-container">
-      <h2 className="chart-title">Regional Metrics Overview</h2>
-      <p className="chart-subtitle">
-        Comparative analysis of intensity, likelihood, and relevance by region
-      </p>
+      <h2 className="chart-title">
+        Regional Distribution of Intensity, Likelihood, and Relevance
+      </h2>
+      <p className="chart-subtitle">Compare metrics across different regions</p>
+      <div className="filters">
+        <input
+          type="text"
+          name="region"
+          placeholder="Region"
+          value={filters.region}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="endYear"
+          placeholder="End Year"
+          value={filters.endYear}
+          onChange={handleChange}
+        />
+        {/* Add other filters as needed */}
+      </div>
       <Bar data={data} options={chartOptions} />
     </div>
   );

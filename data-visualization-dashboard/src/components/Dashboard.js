@@ -11,7 +11,7 @@ import CityChart from "./CityChart"; // Import the CityChart component
 const Dashboard = () => {
   const [lineChartData, setLineChartData] = useState({});
   const [timelineChartData, setTimelineChartData] = useState({});
-  const [geoData, setGeoData] = useState({});
+
   const [topicsData, setTopicsData] = useState({});
   const [regionData, setRegionData] = useState({});
   const [cityData, setCityData] = useState({});
@@ -94,20 +94,7 @@ const Dashboard = () => {
           setError("Timeline chart data is not in expected format.");
         }
 
-        // Fetch Geo Map Data
-        const geoResponse = await axios.get(
-          "http://localhost:5000/api/geodata"
-        );
-        const geoData = geoResponse.data;
-
-        if (geoData && Array.isArray(geoData)) {
-          setGeoData({
-            // Process geoData as needed for GeoMap component
-            features: geoData.features, // Example field
-          });
-        } else {
-          setError("Geo map data is not in expected format.");
-        }
+        // Fetch Geo Map D
         // Fetch Region Chart Data
         const regionResponse = await axios.get(
           "http://localhost:5000/api/region"
